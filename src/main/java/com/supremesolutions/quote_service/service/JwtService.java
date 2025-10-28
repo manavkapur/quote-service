@@ -10,12 +10,25 @@ import java.security.Key;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "supreme-solutions-secret-key-9876543210@#jwt";
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private final Key key;
+
+    public JwtService() {
+        // 🔒 Load secret key from environment variable
+        String secret = System.getenv("JWT_SECRET_KEY");
+
+        if (secret == null || secret.isEmpty()) {
+            throw new IllegalStateException("❌ JWT_SECRET_KEY environment variable is not set!");
+        }
+
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
             return false;
