@@ -1,18 +1,22 @@
-# Step 1: Use OpenJDK base image
-FROM eclipse-temurin:17-jdk
+# =========================================
+# 🏗️ Stage 1: Build the application
+# =========================================
+FROM eclipse-temurin:17-jdk AS build
 
-# Step 2: Set working directory
 WORKDIR /app
-
-# Step 3: Copy Maven build files
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
 COPY src ./src
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
-# Step 4: Package the application
-RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
-
-# Step 5: Expose port (matches application.yml)
+# =========================================
+# 🚀 Stage 2: Create lightweight runtime image
+# =========================================
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+COPY --from=build /app/target/quote-service-0.0.1-SNAPSHOT.jar app.jar
+ENV PORT=8087
 EXPOSE 8087
-
-# Step 6: Run the Spring Boot JAR
-CMD ["java", "-jar", "target/quote-service-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
