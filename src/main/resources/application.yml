@@ -1,14 +1,17 @@
 server:
   port: 8087
+
 spring:
   application:
     name: quote-service
+
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/quote_service_db}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
       maximum-pool-size: ${SPRING_DATASOURCE_MAX_POOL:10}
+
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
@@ -25,20 +28,23 @@ spring:
     ssl: ${SPRING_REDIS_SSL:true}
     timeout: 5000
 
+spring.config.import: optional:classpath:application-${spring.profiles.active}.yml
 
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:https://eureka-service-<your-app>.onrender.com/eureka/}
+      defaultZone: ${EUREKA_URL}
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${random.value}
     metadata-map:
       instanceId: ${spring.application.name}:${server.port}
 
-
 management:
   endpoints:
     web:
       exposure:
         include: health, info
+  health:
+    redis:
+      enabled: false
