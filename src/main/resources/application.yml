@@ -19,11 +19,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   redis:
-    host: ${SPRING_REDIS_HOST:funny-monkey-29399.upstash.io}
-    port: ${SPRING_REDIS_PORT:6379}
+    host: ${SPRING_REDIS_HOST}
+    port: ${SPRING_REDIS_PORT}
     password: ${SPRING_REDIS_PASSWORD}
     ssl: ${SPRING_REDIS_SSL:true}
     timeout: 5000
+
 
 eureka:
   client:
