@@ -7,12 +7,22 @@ spring:
       idle-timeout: 30000
       connection-timeout: 20000
 
+  # ✅ Ensure Redis is fully mirrored here too
   redis:
     host: ${SPRING_REDIS_HOST}
     port: ${SPRING_REDIS_PORT}
     password: ${SPRING_REDIS_PASSWORD}
     ssl: true
     timeout: 5000
+
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
+      password: ${SPRING_REDIS_PASSWORD}
+      ssl:
+        enabled: true
+      timeout: 5000
 
 eureka:
   client:

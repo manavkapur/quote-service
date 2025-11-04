@@ -21,6 +21,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  # ✅ Unified Redis configuration (now matches contact-service)
   redis:
     host: ${SPRING_REDIS_HOST}
     port: ${SPRING_REDIS_PORT}
@@ -28,8 +29,19 @@ spring:
     ssl: ${SPRING_REDIS_SSL:true}
     timeout: 5000
 
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
+      password: ${SPRING_REDIS_PASSWORD}
+      ssl:
+        enabled: ${SPRING_REDIS_SSL:true}
+      timeout: 5000
+
+# ✅ Import environment-specific YAML if available
 spring.config.import: optional:classpath:application-${spring.profiles.active}.yml
 
+# ✅ Eureka configuration
 eureka:
   client:
     service-url:
@@ -40,6 +52,7 @@ eureka:
     metadata-map:
       instanceId: ${spring.application.name}:${server.port}
 
+# ✅ Management endpoints
 management:
   endpoints:
     web:
