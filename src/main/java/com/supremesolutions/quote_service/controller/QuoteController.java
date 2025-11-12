@@ -53,8 +53,8 @@ public class QuoteController {
         return ResponseEntity.ok(pending);
     }
 
-    // ✅ Admin-only: approve/reject quote
-    @PutMapping("/admin/{id}/status")
+    // ✅ Admin-only: approve/reject quote (accept both PUT & POST)
+    @RequestMapping(value = "/admin/{id}/status", method = {RequestMethod.PUT, RequestMethod.POST})
     public ResponseEntity<?> updateQuoteStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> body,
