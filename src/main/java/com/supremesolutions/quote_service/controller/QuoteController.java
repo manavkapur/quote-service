@@ -6,6 +6,7 @@ import com.supremesolutions.quote_service.service.QuoteService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,11 +55,18 @@ public class QuoteController {
     }
 
     // ✅ Admin-only: approve/reject quote (accept both PUT & POST)
-    @RequestMapping(value = "/admin/{id}/status", method = {RequestMethod.PUT, RequestMethod.POST})
+    @PostMapping("/admin/{id}/status")
     public ResponseEntity<?> updateQuoteStatus(
             @PathVariable Long id,
-            @RequestBody Map<String, String> body,
+            @RequestBody(required = false) Map<String, String> body,
             HttpServletRequest request) {
+
+        if (body == null || !body.containsKey("status")) {
+            // do NOT return 405 — return a safe error instead
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Missing status field"));
+        }
 
         String username = (String) request.getAttribute("username");
         String newStatus = body.get("status");
@@ -69,4 +77,5 @@ public class QuoteController {
                 "message", "Quote #" + id + " updated to " + newStatus
         ));
     }
+
 }
